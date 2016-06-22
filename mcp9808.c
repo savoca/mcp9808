@@ -14,6 +14,7 @@
 
 #define pr_fmt(fmt) "%s: " fmt, __func__
 
+#include <linux/acpi.h>
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/fs.h>
@@ -411,6 +412,12 @@ static int mcp9808_remove(struct i2c_client *client)
 	return 0;
 }
 
+static const struct acpi_device_id mcp9808_acpi_match[] = {
+	{ "MCP9808", 0 },
+	{},
+};
+MODULE_DEVICE_TABLE(acpi, mcp9808_acpi_match);
+
 static struct i2c_device_id mcp9808_id_table[] = {
 	{ "mcp9808", 0 },
 	{},
@@ -427,6 +434,7 @@ static struct i2c_driver mcp9808_driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
 		.of_match_table = mcp9808_match_table,
+		.acpi_match_table = ACPI_PTR(mcp9808_acpi_match),
 	},
 	.probe = mcp9808_probe,
 	.remove = mcp9808_remove,
